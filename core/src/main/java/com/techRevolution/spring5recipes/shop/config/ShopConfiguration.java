@@ -4,6 +4,9 @@ import com.techRevolution.spring5recipes.shop.Battery;
 import com.techRevolution.spring5recipes.shop.OtgCable;
 import com.techRevolution.spring5recipes.shop.Pendrive;
 import com.techRevolution.spring5recipes.shop.Product;
+import com.techRevolution.spring5recipes.shop.ProductCreator;
+import com.techRevolution.spring5recipes.shop.ProductPrice;
+import com.techRevolution.spring5recipes.shop.ProductsNames;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,12 +16,16 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.Resource;
 
 import javax.annotation.PostConstruct;
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 @ComponentScan(basePackages = "com.techRevolution.spring5recipes.shop")
 @PropertySource(value = "classpath:discount.properties")
 @Slf4j
 public class ShopConfiguration {
+
+    private static final int PEN_DRIVE_STORAGE_CAPACITY = 16;
 
     @Value("${specialCustomer.discount}")
     private double discountValue;
@@ -40,20 +47,33 @@ public class ShopConfiguration {
 
     @Bean
     public Product pendrive(){
-        Pendrive pendrive = new Pendrive("Sony", 500);
-        pendrive.setCapacity(16);
-        return pendrive;
+        //ProductCreator.getProductByStaticFactory("pendrive");
+        return productCreator().getProduct("pendrive");
     }
 
     @Bean
     public Product battery(){
-        Battery battery = new Battery("AAA", 250.50);
-        battery.setRechargable(true);
-        return battery;
+        //ProductCreator.getProductByStaticFactory("battery");
+        return productCreator().getProduct("battery");
     }
 
     @Bean
     public Product otgCable(){
-        return new OtgCable("cable", 30);
+        //ProductCreator.getProductByStaticFactory("otgCable");
+        return productCreator().getProduct("otgCable");
+    }
+
+//    @Bean
+    public ProductCreator productCreator(){
+        Map<String ,Product> map = new HashMap<>();
+        Battery battery = new Battery(ProductsNames.BATTERY.getProductName() , ProductPrice.BATTERY.getProductPrice());
+        battery.setRechargable(true);
+        map.put("battery", battery);
+        Pendrive pendrive;
+        pendrive = new Pendrive(ProductsNames.PENDRIVE.getProductName() , ProductPrice.PENDRIVE.getProductPrice());
+        pendrive.setCapacity(PEN_DRIVE_STORAGE_CAPACITY);
+        map.put("pendrive", pendrive);
+        map.put("otgCable", new OtgCable(ProductsNames.OTGCABLE.getProductName(), ProductPrice.OTGCABLE.getProductPrice()));
+        return new ProductCreator(map);
     }
 }
