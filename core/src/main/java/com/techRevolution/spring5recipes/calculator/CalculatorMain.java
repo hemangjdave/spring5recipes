@@ -1,6 +1,8 @@
 package com.techRevolution.spring5recipes.calculator;
 
 import com.techRevolution.spring5recipes.calculator.components.ArithmeticCalculator;
+import com.techRevolution.spring5recipes.calculator.components.MaxCalculator;
+import com.techRevolution.spring5recipes.calculator.components.MinCalculator;
 import com.techRevolution.spring5recipes.calculator.components.UnitCalculator;
 import com.techRevolution.spring5recipes.calculator.config.CalculatorConfiguration;
 import org.springframework.context.ApplicationContext;
@@ -18,6 +20,11 @@ public class CalculatorMain {
         arithmeticCalculator.subtract(4, 3);
         arithmeticCalculator.multiply(5, 6);
         arithmeticCalculator.divide(15, 5);
+
+        MaxCalculator maxCalculator = (MaxCalculator) arithmeticCalculator;
+        MinCalculator minCalculator = (MinCalculator) arithmeticCalculator;
+        maxCalculator.max(100, 200);
+        minCalculator.min(100, 200);
 
         UnitCalculator unitCalculator = applicationContext.getBean("unitCalculatorImpl",UnitCalculator.class);
         unitCalculator.kilogramToPound(85);
